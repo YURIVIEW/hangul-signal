@@ -2,6 +2,14 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K4HZV1RWMH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-K4HZV1RWMH');
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>똑똑 한글 신호등</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚦</text></svg>">
@@ -1129,13 +1137,55 @@ function getRotated(jamo) {
 
 /* ── 4. BADGE CONFIG ── */
 const BADGE_COLORS = [
-  { name:'빨강', color:'#E74C3C', threshold:10 },
-  { name:'주황', color:'#E67E22', threshold:20 },
-  { name:'노랑', color:'#F1C40F', threshold:30 },
-  { name:'초록', color:'#2ECC71', threshold:40 },
-  { name:'파랑', color:'#3498DB', threshold:50 },
-  { name:'남색', color:'#2C3E90', threshold:60 },
-  { name:'보라', color:'#9B59B6', threshold:70 },
+  { name:'빨강',     color:'#E74C3C', threshold:10 },
+  { name:'주황',     color:'#E67E22', threshold:20 },
+  { name:'노랑',     color:'#F1C40F', threshold:30 },
+  { name:'초록',     color:'#2ECC71', threshold:40 },
+  { name:'파랑',     color:'#3498DB', threshold:50 },
+  { name:'남색',     color:'#2C3E90', threshold:60 },
+  { name:'보라',     color:'#9B59B6', threshold:70 },
+  { name:'핑크',     color:'#F4A0B0', threshold:80 },
+  { name:'살구',     color:'#F7C59F', threshold:90 },
+  { name:'레몬',     color:'#FFF176', threshold:100 },
+  { name:'민트',     color:'#A8E6CF', threshold:110 },
+  { name:'하늘',     color:'#AED6F1', threshold:120 },
+  { name:'라벤더',   color:'#C39BD3', threshold:130 },
+  { name:'코랄',     color:'#F1948A', threshold:140 },
+  { name:'은색',     color:'#BDC3C7', threshold:150 },
+  { name:'흰색',     color:'#ECF0F1', threshold:160 },
+  { name:'검정',     color:'#2C3E50', threshold:170 },
+  { name:'베이지',   color:'#D4AC8A', threshold:180 },
+  { name:'카키',     color:'#7D8A5A', threshold:190 },
+  { name:'와인',     color:'#922B21', threshold:200 },
+  { name:'금색',     color:'#D4AC0D', threshold:210 },
+  { name:'형광초록',  color:'#00E676', threshold:220 },
+  { name:'형광노랑',  color:'#FFD600', threshold:230 },
+  { name:'산호',     color:'#FF6B6B', threshold:240 },
+  { name:'하늘색',   color:'#4FC3F7', threshold:250 },
+  { name:'자주',     color:'#880E4F', threshold:260 },
+  { name:'올리브',   color:'#827717', threshold:270 },
+  { name:'청록',     color:'#00897B', threshold:280 },
+  { name:'골드',     color:'#F9A825', threshold:290 },
+  { name:'실버',     color:'#90A4AE', threshold:300 },
+  { name:'로즈핑크',  color:'#E91E8C', threshold:310 },
+  { name:'펄',       color:'#F5CBA7', threshold:320 },
+  { name:'브론즈',   color:'#CD7F32', threshold:330 },
+  { name:'플래티넘',  color:'#B0BEC5', threshold:340 },
+  { name:'다이아',   color:'#80DEEA', threshold:350 },
+  { name:'벚꽃',     color:'#FFB7C5', threshold:360 },
+  { name:'코발트',   color:'#1565C0', threshold:370 },
+  { name:'단풍',     color:'#E65100', threshold:380 },
+  { name:'눈꽃',     color:'#E3F2FD', threshold:390 },
+  { name:'물빛',     color:'#26C6DA', threshold:400 },
+  { name:'햇살',     color:'#FDD835', threshold:410 },
+  { name:'인디고',   color:'#4B0082', threshold:420 },
+  { name:'딥핑크',   color:'#FF1493', threshold:430 },
+  { name:'청옥',     color:'#00CED1', threshold:440 },
+  { name:'다크오렌지', color:'#FF8C00', threshold:450 },
+  { name:'슬레이트',  color:'#6A5ACD', threshold:460 },
+  { name:'포레스트',  color:'#228B22', threshold:470 },
+  { name:'크림슨',   color:'#DC143C', threshold:480 },
+  { name:'무지개',   color:'conic',   threshold:490 },
 ];
 
 /* ── 5. STATE ── */
@@ -1422,24 +1472,14 @@ function updateBadgeCount() {
 /* ── 10. GAME LOGIC ── */
 function inputJamo(btnIndex) {
   if (state.gameOver) return;
-  const nextEmpty = state.currentGuessJamo.findIndex((j, i) =>
-    j === '' && !state.hintUsedSlots.has(i) ? true :
-    j === '' ? true : false
-  );
-  // find first truly empty and not hint-locked
+  // hint-locked 슬롯(이미 힌트로 채워진 슬롯)은 건너뛰고 첫 번째 빈 슬롯 찾기
   let target = -1;
   for (let i = 0; i < state.currentGuessJamo.length; i++) {
     if (state.currentGuessJamo[i] === '' && !state.hintUsedSlots.has(i)) {
       target = i;
       break;
     }
-    if (state.currentGuessJamo[i] === '') {
-      // hint locked, skip
-    }
   }
-  // Actually: hint-locked slots have answerJamo value auto-filled already
-  // So find first empty
-  target = state.currentGuessJamo.findIndex(j => j === '');
   if (target === -1) return;
 
   state.currentGuessJamo[target] = state.jamoButtons[btnIndex].jamo;
@@ -1595,8 +1635,19 @@ function useHint() {
   for (let i = 0; i < state.answerJamo.length; i++) {
     if (!state.hintUsedSlots.has(i)) {
       state.hintUsedSlots.add(i);
+      // 기존 슬롯에 다른 자모가 있었다면 해당 버튼 used 해제
+      const prevJamo = state.currentGuessJamo[i];
+      if (prevJamo && prevJamo !== state.answerJamo[i]) {
+        // 이전에 입력된 자모와 일치하는 used 버튼 하나 해제
+        for (let bi = 0; bi < state.jamoButtons.length; bi++) {
+          if (state.usedButtons.has(bi) && state.jamoButtons[bi].jamo === prevJamo) {
+            state.usedButtons.delete(bi);
+            break;
+          }
+        }
+      }
       state.currentGuessJamo[i] = state.answerJamo[i];
-      // mark a matching unused button as used
+      // 힌트 자모와 일치하는 미사용 버튼을 used 처리
       const hintJamo = state.answerJamo[i];
       for (let bi = 0; bi < state.jamoButtons.length; bi++) {
         if (!state.usedButtons.has(bi) && state.jamoButtons[bi].jamo === hintJamo) {
@@ -1623,7 +1674,7 @@ function checkBadgeUnlock() {
 
 function showBadgeUnlockPopup(badgeIdx) {
   const badge = BADGE_COLORS[badgeIdx];
-  document.getElementById('badgeUnlockIcon').style.background = badge.color;
+  document.getElementById('badgeUnlockIcon').style.background = badge.color === 'conic' ? 'conic-gradient(#E74C3C,#E67E22,#F1C40F,#2ECC71,#3498DB,#9B59B6,#E74C3C)' : badge.color;
   document.getElementById('badgeUnlockIcon').textContent = '⭐';
   document.getElementById('badgeUnlockSub').textContent =
     `${badge.name} 뱃지를 얻었어요! (정답 ${badge.threshold}개 달성)`;
@@ -1693,7 +1744,7 @@ function showBadgeModal() {
       const badge = BADGE_COLORS[i];
       const unlocked = state.unlockedBadges.includes(i);
       if (unlocked) {
-        slot.style.background = badge.color;
+        slot.style.background = badge.color === 'conic' ? 'conic-gradient(#E74C3C,#E67E22,#F1C40F,#2ECC71,#3498DB,#9B59B6,#E74C3C)' : badge.color;
         slot.classList.add('unlocked');
         slot.innerHTML = `<span style="font-size:0.75rem;color:white;font-family:var(--font-main);font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,0.2);">${badge.name}</span>`;
       } else {
