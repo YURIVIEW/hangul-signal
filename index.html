@@ -1737,24 +1737,25 @@ function showBadgeModal() {
   document.getElementById('badgeProgressText').textContent =
     next ? `다음 뱃지까지 정답 ${needed}개 더!` : '모든 색깔 뱃지 달성! 🎉';
 
-  for (let i = 0; i < 49; i++) {
+  for (let i = 0; i < BADGE_COLORS.length; i++) {
     const slot = document.createElement('div');
     slot.className = 'badge-slot';
-    if (i < 7) {
-      const badge = BADGE_COLORS[i];
-      const unlocked = state.unlockedBadges.includes(i);
-      if (unlocked) {
-        slot.style.background = badge.color === 'conic' ? 'conic-gradient(#E74C3C,#E67E22,#F1C40F,#2ECC71,#3498DB,#9B59B6,#E74C3C)' : badge.color;
-        slot.classList.add('unlocked');
-        slot.innerHTML = `<span style="font-size:0.75rem;color:white;font-family:var(--font-main);font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,0.2);">${badge.name}</span>`;
-      } else {
-        slot.classList.add('locked');
-        slot.innerHTML = `<span class="badge-lock">🔒</span>`;
-        slot.title = `정답 ${badge.threshold}개 달성 시 해금`;
-      }
+    const badge = BADGE_COLORS[i];
+    const unlocked = state.unlockedBadges.includes(i);
+    if (unlocked) {
+      slot.style.background = badge.color === 'conic' ? 'conic-gradient(#E74C3C,#E67E22,#F1C40F,#2ECC71,#3498DB,#9B59B6,#E74C3C)' : badge.color;
+      slot.classList.add('unlocked');
+      const nameLen = badge.name.length;
+        const fSize = nameLen >= 4 ? '9px' : '0.75rem';
+        // 5자는 2+3으로 줄바꿈 (다크오렌지 → 다크<br>오렌지)
+        const nameHtml = nameLen >= 5
+          ? badge.name.slice(0,2) + '<br>' + badge.name.slice(2)
+          : badge.name;
+        slot.innerHTML = `<span style="font-size:${fSize};color:white;font-family:var(--font-main);font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,0.2);line-height:1.2;text-align:center;">${nameHtml}</span>`;
     } else {
       slot.classList.add('locked');
       slot.innerHTML = `<span class="badge-lock">🔒</span>`;
+      slot.title = `정답 ${badge.threshold}개 달성 시 해금`;
     }
     grid.appendChild(slot);
   }
